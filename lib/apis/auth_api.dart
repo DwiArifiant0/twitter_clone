@@ -1,7 +1,9 @@
+// ignore: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, duplicate_ignore
+
 import 'package:fpdart/fpdart.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as model;
-import 'package:fpdart/fpdart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/providers.dart';
 
