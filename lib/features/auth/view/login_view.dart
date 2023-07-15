@@ -1,14 +1,9 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../common/common.dart';
 import 'package:twitter_clone/features/auth/widgets/auth_field.dart';
-import '../../../common/loading_page.dart';
 import '../../../constants/constants.dart';
-import '../../../constants/ui_constant.dart';
 import '../../../theme/theme.dart';
 import '../controller/auth_controller.dart';
 import 'signup_view.dart';
@@ -28,8 +23,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  ProviderListenable? get authControllerProvider => null;
-
   @override
   void dispose() {
     super.dispose();
@@ -38,8 +31,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
   }
 
   void onLogin() {
-    // ignore: prefer_typing_uninitialized_variables
-    var authControllerProvider;
     ref.read(authControllerProvider.notifier).login(
           email: emailController.text,
           password: passwordController.text,
@@ -49,7 +40,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authControllerProvider!);
+    final isLoading = ref.watch(authControllerProvider);
     return Scaffold(
       appBar: appBar,
       body: isLoading
