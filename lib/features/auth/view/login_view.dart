@@ -1,22 +1,34 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:twitter_clone/constants/ui_constant.dart';
-import 'package:twitter_clone/features/auth/view/signup_view.dart';
-import '../../../../common/rounded_small_button.dart';
-import '../widgets/auth_field.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../common/common.dart';
+import 'package:twitter_clone/features/auth/widgets/auth_field.dart';
+import '../../../common/loading_page.dart';
+import '../../../constants/constants.dart';
+import '../../../constants/ui_constant.dart';
 import '../../../theme/theme.dart';
+import '../controller/auth_controller.dart';
+import 'signup_view.dart';
 
-class LoginView extends StatefulWidget {
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
+  static route() => MaterialPageRoute(
+        builder: (context) => const LoginView(),
+      );
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
   final appBar = UIConstants.appBar();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  ProviderListenable? get authControllerProvider => null;
 
   @override
   void dispose() {
@@ -25,57 +37,68 @@ class _LoginViewState extends State<LoginView> {
     passwordController.dispose();
   }
 
+  void onLogin() {
+    // ignore: prefer_typing_uninitialized_variables
+    var authControllerProvider;
+    ref.read(authControllerProvider.notifier).login(
+          email: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(authControllerProvider!);
     return Scaffold(
       appBar: appBar,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                AuthField(controller: emailController, hintText: 'Email'),
-                const SizedBox(height: 25.0),
-                AuthField(controller: passwordController, hintText: 'Password'),
-                const SizedBox(height: 40.0),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: RoundedSmallButton(
-                    onTap: () {},
-                    label: 'Done',
-                  ),
-                ),
-                const SizedBox(height: 40.0),
-                RichText(
-                  text: TextSpan(
-                    text: "Don't have an account?",
-                    style: const TextStyle(
-                      fontSize: 16,
-                    ),
+      body: isLoading
+          ? const Loader()
+          : Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
                     children: [
-                      TextSpan(
-                        text: " Sign up",
-                        style: const TextStyle(
-                          color: Pallete.blueColor,
-                          fontSize: 16,
+                      AuthField(controller: emailController, hintText: 'Email'),
+                      const SizedBox(height: 25.0),
+                      AuthField(
+                          controller: passwordController, hintText: 'Password'),
+                      const SizedBox(height: 40.0),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: RoundedSmallButton(
+                          onTap: onLogin,
+                          label: 'Done',
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              SignUpView.route(),
-                            );
-                          },
+                      ),
+                      const SizedBox(height: 40.0),
+                      RichText(
+                        text: TextSpan(
+                          text: "Don't have an account?",
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: " Sign up",
+                              style: const TextStyle(
+                                color: Pallete.blueColor,
+                                fontSize: 16,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(context, SignUpView.route());
+                                },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
